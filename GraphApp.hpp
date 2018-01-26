@@ -62,6 +62,8 @@ using namespace std;
 
 #define ANIMATION_DELAY     (25)
 
+#define SELECTION_ACCURACY (10)
+
 
 /**
  * @brief Encapsulates the main application class.
@@ -103,10 +105,14 @@ private:
     vector <Edge *> mst;
 
     vector <Edge *> path;
+    int start_path;
+    int end_path;
 
     void draw_nodes();
     void draw_mst();
     void generate_nodes();
     void generate_edges();
     void draw_edges(vector <Edge *> &v, int r, int g, int b);
+    int find_point(int x, int y);
+
 };

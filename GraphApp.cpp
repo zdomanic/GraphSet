@@ -101,6 +101,9 @@ GraphApp::GraphApp()
     /* Generate a list of points. */
     generate_nodes();
     generate_edges();
+    
+    start_path = 0;
+    end_path = NPOINTS - 1;
 }
 
 
@@ -204,9 +207,32 @@ void GraphApp::OnEvent(SDL_Event* event)
         else if (event->key.keysym.unicode == 'p')
         {
             delete_path();
-            findShortestPath(0, NPOINTS - 1, Graph(nodes, edges), this);
+            findShortestPath(start_path, end_path, Graph(nodes, edges), this);
         }
     }
+    else if (event->type == SDL_MOUSEBUTTONDOWN) {
+		int pt_index = find_point(event->button.x, event->button.y);
+		if (event->button.button == SDL_BUTTON_LEFT) {
+			start_path = pt_index;
+		}
+		else if (event->button.button == SDL_BUTTON_RIGHT) {
+			end_path = pt_index;
+		}
+		OnRender(3);
+	}
+}
+
+/**
+ * @brief Finds point closest to click.
+ */
+int GraphApp::find_point(int x, int y) 
+{
+	for (int i = 0; i < NPOINTS; i++) {
+		if (abs(nodes[i]->x - x) < SELECTION_ACCURACY && 
+				abs(nodes[i]->y - y) < SELECTION_ACCURACY)
+			return i;
+	}
+	return -1;
 }
 
 /**
@@ -214,9 +240,17 @@ void GraphApp::OnEvent(SDL_Event* event)
  */
 void GraphApp::draw_nodes()
 {
-    for (int i = 0; i < NPOINTS; i++)
-        filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
-            0, 0, 255, 255);
+    for (int i = 0; i < NPOINTS; i++) {
+		if (i == start_path)
+			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
+				0, 255, 0, 255);
+		else if (i == end_path)
+			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
+				255, 0, 0, 255);
+		else
+			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
+				0, 0, 255, 255);
+	}
 }
 
 
