@@ -72,18 +72,22 @@ void GraphApp::generate_edges() {
     for (int i = 0; i < NEDGES; i++) {
         // make sure graph is connected.
         if(i < NPOINTS) {
-            Node a = *(nodes[i]);
-            Node b = *(nodes[rand() % NPOINTS]);
-            double w = a.distance(b);
+            Node *a = (nodes[i]);
+            Node *b = (nodes[rand() % NPOINTS]);
+            double w = a->distance(*b);
             if (w == 0) continue;
             edges.push_back(new Edge(i, a, b, w));
+            a->edges.push_back(b);
+            b->edges.push_back(a);
         }
         else {
-            Node a = *(nodes[rand() % NPOINTS]);
-            Node b = *(nodes[rand() % NPOINTS]);
-            double w = a.distance(b);
+            Node *a = (nodes[rand() % NPOINTS]);
+            Node *b = (nodes[rand() % NPOINTS]);
+            double w = a->distance(*b);
             if (w == 0) continue;
             edges.push_back(new Edge(i, a, b, w));
+            a->edges.push_back(b);
+            b->edges.push_back(a);
         }
     }
 }
@@ -102,8 +106,8 @@ GraphApp::GraphApp()
     generate_nodes();
     generate_edges();
     
-    start_path = 0;
-    end_path = NPOINTS - 1;
+    start = 0;
+    end = NPOINTS - 1;
 }
 
 
@@ -207,16 +211,18 @@ void GraphApp::OnEvent(SDL_Event* event)
         else if (event->key.keysym.unicode == 'p')
         {
             delete_path();
-            findShortestPath(start_path, end_path, Graph(nodes, edges), this);
+            findShortestPath(start, end, Graph(nodes, edges), this);
         }
     }
     else if (event->type == SDL_MOUSEBUTTONDOWN) {
-		int pt_index = find_point(event->button.x, event->button.y);
+		int pt_ = find_point(event->button.x, event->button.y);
 		if (event->button.button == SDL_BUTTON_LEFT) {
-			start_path = pt_index;
+			if (pt_ != -1)
+				start = pt_;
 		}
 		else if (event->button.button == SDL_BUTTON_RIGHT) {
-			end_path = pt_index;
+			if (pt_ != -1)
+				end = pt_;
 		}
 		OnRender(3);
 	}
@@ -241,10 +247,10 @@ int GraphApp::find_point(int x, int y)
 void GraphApp::draw_nodes()
 {
     for (int i = 0; i < NPOINTS; i++) {
-		if (i == start_path)
+		if (i == start)
 			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
 				0, 255, 0, 255);
-		else if (i == end_path)
+		else if (i == end)
 			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
 				255, 0, 0, 255);
 		else
@@ -299,11 +305,11 @@ void GraphApp::delete_path()
  */
 void GraphApp::draw_edges(vector <Edge *> &v, int r, int g, int b)
 {
-    for (unsigned int i = 0; i < v.size() - 1; i++)
+    for (unsigned int i = 0; i < v.size(); i++)
     {
         // Draw lines between consecutive hull points.
-        lineRGBA(surf, v[i]->a.x, v[i]->a.y, v[i]->b.x,
-            v[i]->b.y, r, g, b, 255);
+        lineRGBA(surf, v[i]->a->x, v[i]->a->y, v[i]->b->x,
+            v[i]->b->y, r, g, b, 255);
     }
 }
 

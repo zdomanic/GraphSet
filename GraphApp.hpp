@@ -105,8 +105,8 @@ private:
     vector <Edge *> mst;
 
     vector <Edge *> path;
-    int start_path;
-    int end_path;
+    int start;
+    int end;
 
     void draw_nodes();
     void draw_mst();

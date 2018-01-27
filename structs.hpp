@@ -55,17 +55,23 @@ struct Node
         return sqrt((x - a.x)*(x - a.x) + (y - a.y)*(y - a.y));
     }
     
+        
+    std::vector<Node *> edges;	// adjacency list
+    
+    // extra variables for algorithms
+    Node * previous;
+    double distance_to_start;
 };
 
 struct Edge
 {
-    Node a;
-    Node b;
+    Node *a;
+    Node *b;
     int id;
 
     double weight;
 
-    Edge(int id_, Node a_, Node b_, double weight_)
+    Edge(int id_, Node *a_, Node *b_, double weight_)
         : a(a_)
         , b(b_)
         , id(id_)
