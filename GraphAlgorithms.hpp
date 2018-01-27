@@ -11,10 +11,11 @@
  */
 #pragma once 
 
-#include <vector>
 #include <cstdlib>
 #include <stdlib.h>
 #include <iostream>
+#include <list>
+#include <vector>
 #include "GraphApp.hpp"
 #include "structs.hpp"
 
@@ -25,3 +26,5 @@ void buildMSTPrim(Graph g, GraphApp *app);
 void buildMSTKruskal(Graph g, GraphApp *app);
 
 void findShortestPath(int start, int end, Graph g, GraphApp * app);
+
+int getEdge(Node *pt1, Node *pt2, vector<Edge *> edges);
