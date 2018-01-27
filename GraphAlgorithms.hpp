@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <list>
+#include <queue>
 #include <vector>
 #include "GraphApp.hpp"
 #include "structs.hpp"
@@ -27,7 +28,15 @@ void buildMSTKruskal(Graph g, GraphApp *app);
 
 void findShortestPath(int start, int end, Graph g, GraphApp * app);
 
-int getEdge(Node *pt1, Node *pt2, vector<Edge *> edges);
+void drawEdge(Node *pt1, Node *pt2, vector<Edge *> edges, GraphApp *app, bool mst);
 
 vector<Node *> onMST;
 vector<Node *> notOnMST;
+
+
+struct KruskalEdge
+{
+	double weight;
+	Node *u;
+	Node *v;
+};

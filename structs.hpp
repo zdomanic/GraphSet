@@ -54,12 +54,24 @@ struct Node
     double distance (Node a) {
         return sqrt((x - a.x)*(x - a.x) + (y - a.y)*(y - a.y));
     }
-    std::vector<Node *> mst_edges;    
+    
+    void kruskalFloodFill(int new_tree_id) {
+		this->which_tree = new_tree_id;
+		for (unsigned int i = 0; i < this->kruskal_edges.size(); i++) {
+			Node *other = kruskal_edges[i];
+			if (other->which_tree != new_tree_id) {
+				other->kruskalFloodFill(new_tree_id);
+			}
+		}
+	}
+		
+	std::vector<Node *> kruskal_edges;
     std::vector<Node *> edges;	// adjacency list
     
     // extra variables for algorithms
     Node * previous;
     double distance_to_start;
+    int which_tree;
 };
 
 struct Edge
