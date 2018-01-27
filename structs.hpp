@@ -54,8 +54,7 @@ struct Node
     double distance (Node a) {
         return sqrt((x - a.x)*(x - a.x) + (y - a.y)*(y - a.y));
     }
-    
-        
+    std::vector<Node *> mst_edges;    
     std::vector<Node *> edges;	// adjacency list
     
     // extra variables for algorithms

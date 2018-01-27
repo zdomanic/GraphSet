@@ -28,3 +28,6 @@ void buildMSTKruskal(Graph g, GraphApp *app);
 void findShortestPath(int start, int end, Graph g, GraphApp * app);
 
 int getEdge(Node *pt1, Node *pt2, vector<Edge *> edges);
+
+vector<Node *> onMST;
+vector<Node *> notOnMST;

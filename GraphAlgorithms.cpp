@@ -22,10 +22,59 @@
  * TODO: Implement this function.
  */
 void buildMSTPrim(Graph g, GraphApp *app) {
+    vector<Node *> nodes = g.nodes;
     
+    onMST.erase(onMST.begin(), onMST.end());
+	notOnMST.erase(notOnMST.begin(), notOnMST.end());
+	
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+		if (!nodes[i]->mst_edges.empty()) {
+			nodes[i]->mst_edges.erase(nodes[i]->mst_edges.begin(), nodes[i]->mst_edges.end());
+		}
+		if (i != 0) {
+			notOnMST.push_back(nodes[i]);
+		}
+	}
+	
+	onMST.push_back(nodes[0]);
+	
+	Node *notOnTree;
+	Node *onTree;
+	while (!notOnMST.empty()) {
+		double shortestDist = INFINITY;
+		notOnTree = NULL;
+		onTree = NULL;
+		int added = -1;
+		for (unsigned int i = 0; i < onMST.size(); i++) {
+			for (unsigned int j = 0; j < onMST[i]->edges.size(); j++) {
+				double dist = onMST[i]->distance(*(onMST[i]->edges[j]));
+				bool alreadyIn = true;
+				if (dist < shortestDist) {
+					for (unsigned int k = 0; k < notOnMST.size(); k++) {
+						if (onMST[i]->edges[j]->id == notOnMST[k]->id) {
+							alreadyIn = false;
+							added = k;
+						}
+					}
+					if (alreadyIn) continue;
+					shortestDist = dist;
+					notOnTree = onMST[i]->edges[j];
+					onTree = onMST[i];
+				}
+			}
+		}
+		onTree->mst_edges.push_back(notOnTree);
+		notOnTree->mst_edges.push_back(onTree);
+		
+		app->add_to_mst(g.edges[getEdge(notOnTree, onTree, g.edges)]);
+		
+		onMST.push_back(notOnTree);
+		notOnMST.erase(notOnMST.begin() + added);
+	}
+	/*
     for (uint i = 0; i < g.edges.size(); ++i) {
         app->add_to_mst(g.edges[i]);
-    }
+    }*/
 
 }
 

@@ -49,6 +49,7 @@
 #include <SDL_gfxPrimitives.h>
 #include <vector>
 #include "structs.hpp"
+#include <tuple>
 
 using namespace std;
 
