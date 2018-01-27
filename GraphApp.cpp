@@ -308,8 +308,8 @@ void GraphApp::draw_edges(vector <Edge *> &v, int r, int g, int b)
     for (unsigned int i = 0; i < v.size(); i++)
     {
         // Draw lines between consecutive hull points.
-        lineRGBA(surf, v[i]->a->x, v[i]->a->y, v[i]->b->x,
-            v[i]->b->y, r, g, b, 255);
+        thickLineRGBA(surf, v[i]->a->x, v[i]->a->y, v[i]->b->x, v[i]->b->y,
+                      3, r, g, b, 255);
     }
 }
 
@@ -321,15 +321,16 @@ void GraphApp::draw_edges(vector <Edge *> &v, int r, int g, int b)
 void GraphApp::OnRender(int choice)
 {
     SDL_FillRect(surf, nullptr, SDL_MapRGB(surf->format, 255, 255, 255));
-    draw_nodes();
-    draw_edges(edges, 255, 0, 0);
+    draw_edges(edges, 0, 0, 0);
     
     if (choice == 1) {
-        draw_edges(path, 0, 0, 255);
+        draw_edges(path, 255, 0, 255);
     }
     if (choice == 2) {
-        draw_edges(mst, 0, 255, 0);
+        draw_edges(mst, 0, 255, 255);
     }
+
+    draw_nodes();
 
     SDL_Flip(surf);
 }
