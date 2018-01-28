@@ -117,7 +117,7 @@
         background: #ccffcc;
         border: 2px dashed green;
         padding-top: 11px;
-        padding-bottom: 11px;
+        padding-bottom: 11px;hints
         padding-right: 21px;
         padding-left: 21px;
     }
@@ -199,7 +199,6 @@
 <p>These are the prerequisites for getting this assignment to compile (ubuntu package names):</p>
 <ul><li>g++ 4.6.x+</li>
 <li>libsdl1.2-dev (SDL 1.2)</li>
-<li>doxygen (Doxygen)</li>
 <li>libsdl-gfx1.2-dev</li></ul>
 
 <p>Ask a TA if you need help retrieving these packages, or if these packages appear to be missing from the CS cluster.</p>
@@ -302,7 +301,7 @@ spots in the code base for each one. </p>
 
 <p><div class="points easy">1</div>Before you start, pick one of the algorithms you described in the short-answer section and outline it in your choice of stepwise English, Python, or other pseudocode. You should be able to refer to this outline and translate it more-or-less directly into working code.</p>
 
-<p><div class="points easy">4</div>Now open up <span class="code">GraphAlgorithms.cpp</span> in the assignment's source tree, and scroll down to <span class="code">void buildMSTPrim(Graph g, GraphApp *app) </span> or <span class="code">void void buildMSTKruskal(Graph g, GraphApp *app) </span>. This is the function you will need to implement. This function, when run, should find the minimum spanning tree of the graph and draw the edges of the MST using the <span class="code">drawEdge</span> function. The <span class="code">ignore_edges</span> parameter specifies whether the edges that exist should be respected: if this is false, then the MST you find must contain no edges outside the edge set of the graph, but if this is true, then you must ignore the existing edges and assume that all pairs of stars are connected by edges even if this is not actually true.</p>
+<p><div class="points easy">4</div>Now open up <span class="code">GraphAlgorithms.cpp</span> in the assignment's source tree, and scroll down to <span class="code">void buildMSTPrim(Graph g, GraphApp *app) </span> or <span class="code">void void buildMSTKruskal(Graph g, GraphApp *app) </span>. This is the function you will need to implement. This function, when run, should find the minimum spanning tree of the graph and draw the edges of the MST using the <span class="code">drawEdge</span> function.</p>
 
 <p>If you've done the short-answer section, you should already have an idea of how to proceed. You may implement either algorithm discussed in the short-answer section. You may also implement another algorithm if you happen to know of one; this will not yield any extra points.</p>
 
@@ -349,18 +348,18 @@ spots in the code base for each one. </p>
 
 <p>This function declaration might be scary-looking, but it's actually not too bad: the function takes a source and destination node and a graph structure detailing the nodes and all of the edges in the graph, and returns a shortest path.</p>
 
-<p><div class="points hard">3</div>You'll need a way to pick stars according to some metric that will constantly be changing. There's no easy way to do this, unfortunately; not even <span class="code">std::priority_queue</span> will help you, because it doesn't support <span class="code">decreaseKey</span>. We've found that just using an <span class="code">std::vector</span> is good enough; since you're not computing lots of shortest paths, the performance penalty is not large (the algorithm takes a few seconds worst-case). However, for extra points, you can use a binary heap, Fibonacci heap, or similar data structure to make your algorithm much faster. See the relevant notes on Moodle if you want hints on how that's done.</p>
+<p><div class="points hard">3</div>You'll need a way to pick nodes according to some metric that will constantly be changing. There's no easy way to do this, unfortunately; not even <span class="code">std::priority_queue</span> will help you, because it doesn't support <span class="code">decreaseKey</span>. We've found that just using an <span class="code">std::vector</span> is good enough; since you're not computing lots of shortest paths, the performance penalty is not large (the algorithm takes a few seconds worst-case). However, for extra points, you can use a binary heap, Fibonacci heap, or similar data structure to make your algorithm much faster. See the relevant notes on Moodle if you want hints on how that's done. You can also look at Wikipedia and other resources (no pseudocode though) </p>
 
 <div class="hint">Notice that you <span class="emph">may</span> need to add some functions and member variables in order to implement Dijkstra's algorithm successfully. Don't be afraid to switch things around!</div>
 
-<p><div class="points hard">3</div>Why stop at Dijkstra's algorithm, though? There are a number of shortest-path algorithms out there. If you implement another shortest-path algorithm alongside Dijkstra's algorithm and can somehow switch between them (e.g. adding a new button to the gui), you can earn up to three extra points. Be sure to document how to toggle this different shortest-path algorithm</p>
+<p><div class="points hard">3</div>Why stop at Dijkstra's algorithm, though? There are a number of shortest-path algorithms out there. If you implement another shortest-path algorithm alongside Dijkstra's algorithm and can somehow switch between them (e.g. adding a new button to the gui), you can earn up to three extra points. Be sure to document how to toggle this different shortest-path algorithm. Again, you can look at Wikipedia and other resources. </p>
 
 <p>In any case, you'll need to use the draw_edge function to visualize the path. The visualizer will take the edges you add and draw out your path on the screen.</p>
 
 <p>The visualizer will test out your code at startup and try to find a shortest path between two points. You can compute your own shortest paths. Left-click on any node to set the source (green node), and right-click on any node to set the destination (red node). Then press p to compute a path. And the path will appear in pink on the graph.</p>
 
 <h3>Part 3: Minimum Spanning Trees (Again!)</h3>
-<p><div class="points hard">5</div>Earlier in the assignment you implemented either Prim or Kruskal's spanning tree algorithm. Now, if you have time and are interesting, you can implement the other algorithm for a 5 additional points (1 for the outline and 4 for implementing the algorithm). </p>
+<p><div class="points hard">5</div>Earlier in the assignment you implemented either Prim or Kruskal's spanning tree algorithm. Now, if you have time and are interested, you can implement the other algorithm for a 5 additional points (1 for the outline and 4 for implementing the algorithm). </p>
 
 <h4>Test Cases</h4>
 
