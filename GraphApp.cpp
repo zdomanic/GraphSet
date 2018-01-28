@@ -213,6 +213,21 @@ void GraphApp::OnEvent(SDL_Event* event)
             delete_path();
             findShortestPath(start, end, Graph(nodes, edges), this);
         }
+        else if (event->key.keysym.unicode == 'r')
+        {
+            for (Node * t : nodes) {
+                delete t;
+            }
+            for (Edge * e : edges) {
+                delete e;
+            }
+            nodes.clear();
+            edges.clear();
+            /* Generate a list of points. */
+            generate_nodes();
+            generate_edges();
+            OnRender(0);
+        }
     }
     else if (event->type == SDL_MOUSEBUTTONDOWN) {
 		int pt_ = find_point(event->button.x, event->button.y);
