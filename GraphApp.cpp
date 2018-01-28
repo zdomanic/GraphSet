@@ -37,33 +37,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies,
+ * The views and conclusions contained in the software and documentation are
+ * those
+ * of the authors and should not be interpreted as representing official
+ * policies,
  * either expressed or implied, of the California Institute of Technology.
  *
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <iostream>
 #include "GraphApp.hpp"
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 void buildMSTPrim(Graph g, GraphApp *app);
 void buildMSTKruskal(Graph g, GraphApp *app);
-void findShortestPath(int start, int end, Graph g, GraphApp * app);
-
+void findShortestPath(int start, int end, Graph g, GraphApp *app);
 
 /**
  * @brief Randomly generates points within the screen.
  */
-void GraphApp::generate_nodes()
-{
+void GraphApp::generate_nodes() {
     srand(time(nullptr));
 
     for (int i = 0; i < NPOINTS; i++) {
         nodes.push_back(new Node(i, (rand() % (SCREEN_WIDTH - 50) + 25),
-            (rand() % (SCREEN_HEIGHT - 50) + 25)));
+                                 (rand() % (SCREEN_HEIGHT - 50) + 25)));
     }
 }
 
@@ -72,20 +72,21 @@ void GraphApp::generate_edges() {
 
     for (int i = 0; i < NEDGES; i++) {
         // make sure graph is connected.
-        if(i < NPOINTS) {
+        if (i < NPOINTS) {
             Node *a = (nodes[i]);
             Node *b = (nodes[rand() % NPOINTS]);
             double w = a->distance(*b);
-            if (w == 0) continue;
+            if (w == 0)
+                continue;
             edges.push_back(new Edge(i, a, b, w));
             a->edges.push_back(b);
             b->edges.push_back(a);
-        }
-        else {
+        } else {
             Node *a = (nodes[rand() % NPOINTS]);
             Node *b = (nodes[rand() % NPOINTS]);
             double w = a->distance(*b);
-            if (w == 0) continue;
+            if (w == 0)
+                continue;
             edges.push_back(new Edge(i, a, b, w));
             a->edges.push_back(b);
             b->edges.push_back(a);
@@ -93,12 +94,10 @@ void GraphApp::generate_edges() {
     }
 }
 
-
 /**
  * @brief Initializes the main application class.
  */
-GraphApp::GraphApp()
-{
+GraphApp::GraphApp() {
     /* Do SDL initialization. */
     surf = nullptr;
     running = true;
@@ -106,7 +105,7 @@ GraphApp::GraphApp()
     /* Generate a list of points. */
     generate_nodes();
     generate_edges();
-    
+
     start = 0;
     end = NPOINTS - 1;
     graph = 0;
@@ -115,33 +114,24 @@ GraphApp::GraphApp()
 /**
  * @brief Deinitializes the main application class.
  */
-GraphApp::~GraphApp()
-{
-    clean();
-       
-}
-
+GraphApp::~GraphApp() { clean(); }
 
 /**
  * @brief Main application loop; runs until program exit.
  *
  * @return `0` on success, `-1` otherwise.
  */
-int GraphApp::OnExecute()
-{
+int GraphApp::OnExecute() {
     SDL_Event Event;
 
-    if(OnInit() == false)
-    {
+    if (OnInit() == false) {
         return -1;
     }
 
     OnRender(0);
 
-    while (running)
-    {
-        while(SDL_PollEvent(&Event))
-        {
+    while (running) {
+        while (SDL_PollEvent(&Event)) {
             OnEvent(&Event);
         }
     }
@@ -151,22 +141,18 @@ int GraphApp::OnExecute()
     return 0;
 }
 
-
 /**
  * @brief Performs all initialization for SDL at application start.
  *
  * @return `true` if initialization was successful, `false` otherwise.
  */
-bool GraphApp::OnInit()
-{
-    if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
-    {
+bool GraphApp::OnInit() {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         return false;
     }
 
-    if((surf = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32,
-    SDL_HWSURFACE | SDL_DOUBLEBUF)) == nullptr)
-    {
+    if ((surf = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32,
+                                 SDL_HWSURFACE | SDL_DOUBLEBUF)) == nullptr) {
         return false;
     }
 
@@ -176,104 +162,82 @@ bool GraphApp::OnInit()
     return true;
 }
 
-
 /**
  * @brief Called on keypresses, clicks, etc.
  *
  * @param[in] event Describes the event that occurred.
  */
-void GraphApp::OnEvent(SDL_Event* event)
-{
-    if(event->type == SDL_QUIT)
-    {
+void GraphApp::OnEvent(SDL_Event *event) {
+    if (event->type == SDL_QUIT) {
         running = false;
-    }
-    else if (event->type == SDL_KEYDOWN)
-    {
-        if (event->key.keysym.unicode == 'q')
-        {
+    } else if (event->type == SDL_KEYDOWN) {
+        if (event->key.keysym.unicode == 'q') {
             running = false;
-        }
-        else if (event->key.keysym.unicode == 'm')
-        {
+        } else if (event->key.keysym.unicode == 'm') {
             delete_mst();
             buildMSTPrim(Graph(nodes, edges), this);
-        }
-        else if (event->key.keysym.unicode == 'k')
-        {
+        } else if (event->key.keysym.unicode == 'k') {
             delete_mst();
             buildMSTKruskal(Graph(nodes, edges), this);
-        }
-        else if (event->key.keysym.unicode == 'p')
-        {
+        } else if (event->key.keysym.unicode == 'p') {
             delete_path();
             findShortestPath(start, end, Graph(nodes, edges), this);
-        }
-        else if (event->key.keysym.unicode == 'r')
-        {
+        } else if (event->key.keysym.unicode == 'r') {
             clean();
             /* Generate a list of points. */
             generate_nodes();
             generate_edges();
             OnRender(0);
-        }
-        else if (event->key.keysym.unicode == 'c')
-        {
+        } else if (event->key.keysym.unicode == 'c') {
             makeGraphs(graph++ % 3);
             OnRender(0);
         }
+    } else if (event->type == SDL_MOUSEBUTTONDOWN) {
+        int pt_ = find_point(event->button.x, event->button.y);
+        if (event->button.button == SDL_BUTTON_LEFT) {
+            if (pt_ != -1)
+                start = pt_;
+        } else if (event->button.button == SDL_BUTTON_RIGHT) {
+            if (pt_ != -1)
+                end = pt_;
+        }
+        OnRender(3);
     }
-    else if (event->type == SDL_MOUSEBUTTONDOWN) {
-		int pt_ = find_point(event->button.x, event->button.y);
-		if (event->button.button == SDL_BUTTON_LEFT) {
-			if (pt_ != -1)
-				start = pt_;
-		}
-		else if (event->button.button == SDL_BUTTON_RIGHT) {
-			if (pt_ != -1)
-				end = pt_;
-		}
-		OnRender(3);
-	}
 }
 
 /**
  * @brief Finds point closest to click.
  */
-int GraphApp::find_point(int x, int y) 
-{
-	for (int i = 0; i < NPOINTS; i++) {
-		if (abs(nodes[i]->x - x) < SELECTION_ACCURACY && 
-				abs(nodes[i]->y - y) < SELECTION_ACCURACY)
-			return i;
-	}
-	return -1;
+int GraphApp::find_point(int x, int y) {
+    for (int i = 0; i < NPOINTS; i++) {
+        if (abs(nodes[i]->x - x) < SELECTION_ACCURACY &&
+            abs(nodes[i]->y - y) < SELECTION_ACCURACY)
+            return i;
+    }
+    return -1;
 }
 
 /**
  * @brief Draws the points.
  */
-void GraphApp::draw_nodes()
-{
+void GraphApp::draw_nodes() {
     for (uint i = 0; i < nodes.size(); i++) {
-		if (i == (uint)start)
-			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
-				0, 255, 0, 255);
-		else if (i == (uint)end)
-			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
-				255, 0, 0, 255);
-		else
-			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
-				0, 0, 255, 255);
-	}
+        if (i == (uint)start)
+            filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE, 0, 255,
+                             0, 255);
+        else if (i == (uint)end)
+            filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE, 255, 0,
+                             0, 255);
+        else
+            filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE, 0, 0,
+                             255, 255);
+    }
 }
-
-
 
 /**
  * @brief Add a point to the hull and re-render.
  */
-void GraphApp::add_to_mst(Edge * e) {
+void GraphApp::add_to_mst(Edge *e) {
     mst.push_back(e);
 
     SDL_Delay(ANIMATION_DELAY);
@@ -283,7 +247,7 @@ void GraphApp::add_to_mst(Edge * e) {
 /**
  * @brief Adds an edge to the current path and re-renders.
  */
-void GraphApp::add_to_path(Edge * e) {
+void GraphApp::add_to_path(Edge *e) {
     path.push_back(e);
     SDL_Delay(ANIMATION_DELAY);
     OnRender(1);
@@ -292,8 +256,7 @@ void GraphApp::add_to_path(Edge * e) {
 /**
  * @brief Delete all points in the mst and re-render.
  */
-void GraphApp::delete_mst()
-{
+void GraphApp::delete_mst() {
     mst.clear();
     OnRender(0);
 }
@@ -301,37 +264,30 @@ void GraphApp::delete_mst()
 /**
  * @brief Delete all points in the mst and re-render.
  */
-void GraphApp::delete_path()
-{
+void GraphApp::delete_path() {
     path.clear();
     OnRender(0);
 }
 
-
-
 /**
  * @brief Draw the hull.
  */
-void GraphApp::draw_edges(vector <Edge *> &v, int r, int g, int b)
-{
-    for (unsigned int i = 0; i < v.size(); i++)
-    {
+void GraphApp::draw_edges(vector<Edge *> &v, int r, int g, int b) {
+    for (unsigned int i = 0; i < v.size(); i++) {
         // Draw lines between consecutive hull points.
-        thickLineRGBA(surf, v[i]->a->x, v[i]->a->y, v[i]->b->x, v[i]->b->y,
-                      3, r, g, b, 255);
+        thickLineRGBA(surf, v[i]->a->x, v[i]->a->y, v[i]->b->x, v[i]->b->y, 3,
+                      r, g, b, 255);
     }
 }
-
 
 /**
  * @brief Renders everything; called once on startup
  *        and then to animate hull algorithm steps.
  */
-void GraphApp::OnRender(int choice)
-{
+void GraphApp::OnRender(int choice) {
     SDL_FillRect(surf, nullptr, SDL_MapRGB(surf->format, 255, 255, 255));
     draw_edges(edges, 0, 0, 0);
-    
+
     if (choice == 1) {
         draw_edges(path, 255, 0, 255);
     }
@@ -344,36 +300,30 @@ void GraphApp::OnRender(int choice)
     SDL_Flip(surf);
 }
 
-
 /**
  * @brief Performs all cleanup needed by SDL.
  */
-void GraphApp::OnCleanup()
-{
-    SDL_Quit();
-}
-
+void GraphApp::OnCleanup() { SDL_Quit(); }
 
 /**
- * @brief Spawns the application class.
+ * @brief Frees memory in nodes vector and edges vector.
  */
-int main(int argc, char* argv[])
-{
-    GraphApp app;
-    return app.OnExecute();
-}
-
 void GraphApp::clean() {
-    for (Node * t : nodes) {
+    for (Node *t : nodes) {
         delete t;
     }
-    for (Edge * e : edges) {
+    for (Edge *e : edges) {
         delete e;
     }
     nodes.clear();
     edges.clear();
 }
 
+/**
+ * @brief Builds preset graph configurations. Not randomized.
+ *
+ * @param number    specifies which graph to load
+ */
 void GraphApp::makeGraphs(int number) {
     clean();
 
@@ -386,8 +336,8 @@ void GraphApp::makeGraphs(int number) {
                 c++;
             }
         }
-        for(uint i = 0; i < nodes.size() - 1; ++i) {
-            if(i < nodes.size() - 5){
+        for (uint i = 0; i < nodes.size() - 1; ++i) {
+            if (i < nodes.size() - 5) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[i + 5]);
                 double w = a->distance(*b);
@@ -395,7 +345,7 @@ void GraphApp::makeGraphs(int number) {
                 a->edges.push_back(b);
                 b->edges.push_back(a);
             }
-            if((i + 1) % 5 != 0){
+            if ((i + 1) % 5 != 0) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[i + 1]);
                 double w = a->distance(*b);
@@ -405,9 +355,8 @@ void GraphApp::makeGraphs(int number) {
             }
         }
         start = 0;
-        end = nodes.size() - 1; 
-    }
-    else if (number == 1) {
+        end = nodes.size() - 1;
+    } else if (number == 1) {
         int c = 0;
         for (int i = 200; i <= 600; i += 200) {
             for (int j = 50; j <= 550; j += 250) {
@@ -415,8 +364,8 @@ void GraphApp::makeGraphs(int number) {
                 c++;
             }
         }
-        for(uint i = 0; i < nodes.size() - 1; ++i) {
-            if((i + 1) % 3 != 0){
+        for (uint i = 0; i < nodes.size() - 1; ++i) {
+            if ((i + 1) % 3 != 0) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[i + 1]);
                 double w = a->distance(*b);
@@ -424,7 +373,7 @@ void GraphApp::makeGraphs(int number) {
                 a->edges.push_back(b);
                 b->edges.push_back(a);
             }
-            if((i + 1) % 3 == 2 && i < (nodes.size() - 3)){
+            if ((i + 1) % 3 == 2 && i < (nodes.size() - 3)) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[i + 3]);
                 double w = a->distance(*b);
@@ -432,10 +381,9 @@ void GraphApp::makeGraphs(int number) {
                 a->edges.push_back(b);
                 b->edges.push_back(a);
             }
-           
         }
         start = 0;
-        end = nodes.size() - 1; 
+        end = nodes.size() - 1;
     }
 
     else if (number == 2) {
@@ -452,8 +400,8 @@ void GraphApp::makeGraphs(int number) {
         nodes.push_back(new Node(9, 600, 400));
         nodes.push_back(new Node(10, 600, 500));
 
-        for(uint i = 0; i < nodes.size(); ++i) {
-            if(i / 4 == 0){
+        for (uint i = 0; i < nodes.size(); ++i) {
+            if (i / 4 == 0) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[i + 1]);
                 double w = a->distance(*b);
@@ -461,7 +409,7 @@ void GraphApp::makeGraphs(int number) {
                 a->edges.push_back(b);
                 b->edges.push_back(a);
             }
-            if(i / 6 == 1  && i < nodes.size() - 1){
+            if (i / 6 == 1 && i < nodes.size() - 1) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[i + 1]);
                 double w = a->distance(*b);
@@ -469,7 +417,7 @@ void GraphApp::makeGraphs(int number) {
                 a->edges.push_back(b);
                 b->edges.push_back(a);
             }
-            if(i != 5){
+            if (i != 5) {
                 Node *a = (nodes[i]);
                 Node *b = (nodes[5]);
                 double w = 1;
@@ -479,7 +427,15 @@ void GraphApp::makeGraphs(int number) {
             }
         }
         start = 0;
-        end = nodes.size() - 1; 
+        end = nodes.size() - 1;
     }
-
 }
+
+/**
+ * @brief Spawns the application class.
+ */
+int main(int argc, char *argv[]) {
+    GraphApp app;
+    return app.OnExecute();
+}
+

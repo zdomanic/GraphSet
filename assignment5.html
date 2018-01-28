@@ -234,6 +234,8 @@
 <li>m: Prim's algorithm</li>
 <li>k: Kruskal's algorithm</li>
 <li>p: Shortest path</li>
+<li>r: New Graph (Randomized nodes and edges) </li>
+<li>c: Cycle Through Fixed Graphs (Probably easier to test functions on)</li>
 <li>If you want to implement any other algorithm (red points), add controls.
     Take a look at GraphApp.cpp if you want to do this.
 </li></ul>
@@ -309,51 +311,33 @@ int main(void)
 
 <h4>Programming</h4>
 
-<p>In this section, you'll write an implementation of a MST algorithm of your choice.</p>
+<p>In this section, you'll write an implementation of a MST algorithm of your choice. You can either implement Kruskal's or Prim's MST algorithm. There are
+spots in the code base for each one. </p>
 
 <p><div class="points easy">1</div>Before you start, pick one of the algorithms you described in the short-answer section and outline it in your choice of stepwise English, Python, or other pseudocode. You should be able to refer to this outline and translate it more-or-less directly into working code.</p>
 
-<p><div class="points easy">4</div>Now open up <span class="code">GraphAlgorithms.cpp</span> in the assignment's source tree, and scroll down to <span class="code">void Starmap::generateMST(bool ignore_edges)</span>. This is the function you will need to implement. This function, when run, should find the minimum spanning tree of New Eden and store it in the <span class="code">mst_edges</span> member of every star in the MST you find. The <span class="code">ignore_edges</span> parameter specifies whether the edges that exist should be respected: if this is false, then the MST you find must contain no edges outside the edge set of the graph, but if this is true, then you must ignore the existing edges and assume that all pairs of stars are connected by edges even if this is not actually true.</p>
+<p><div class="points easy">4</div>Now open up <span class="code">GraphAlgorithms.cpp</span> in the assignment's source tree, and scroll down to <span class="code">void buildMSTPrim(Graph g, GraphApp *app) </span> or <span class="code">void void buildMSTKruskal(Graph g, GraphApp *app) </span>. This is the function you will need to implement. This function, when run, should find the minimum spanning tree of New Eden and store it in the <span class="code">mst_edges</span> member of every star in the MST you find. The <span class="code">ignore_edges</span> parameter specifies whether the edges that exist should be respected: if this is false, then the MST you find must contain no edges outside the edge set of the graph, but if this is true, then you must ignore the existing edges and assume that all pairs of stars are connected by edges even if this is not actually true.</p>
 
 <p>If you've done the short-answer section, you should already have an idea of how to proceed. You may implement either algorithm discussed in the short-answer section. You may also implement another algorithm if you happen to know of one; this will not yield any extra points.</p>
 
-<p>Weight your edges by distance. Stars have a function <span class="code">Star::cartesianDistanceTo(Star * dest)</span> that will get the distance to the specified star. Distance is given in world units; each world unit is equal to 10^16 meters, or a little more than a lightyear, but you may treat one world unit as exactly equal to 1 lightyear if it simplifies the problem.</p>
+<p>Weight your edges by distance. The Node struct has a function <span class="code">
+    double distance (Node a)</span> that will get the distance to the specified node. Each edge should have a weight associated with it.</p>
 
-<p>The <span class="code">ignore_edges</span> argument specifies whether your MST algorithm should ignore the pre-existing edges and calculate the MST over all pairs of stars, optimizing the tree by distance. <span class="emph">New Eden is large. Calculating the unrestricted MST on all of New Eden could take a long time!</span></p>
 
-<p>Be aware that you may need to specify a star that is contiguous with most of New Eden as a start point in order to calculate a reasonable MST. The star with the ID number 30000142 is a good choice. Notice that the <span class="code">Starmap</span> object stores stars in a <span class="code">std::map</span> keyed by star ID number.</p>
-
-<div class="attention">Do not assume that the graph given contains only one connected component. For the full dataset, this is objectively not the case.</div>
+<div class="attention">You can assume that the graph is connected for this assignment, but this is not necessarily the case for every application. Thing about how that assumption simplifies things. </div>
 
 &nbsp;
 
 <div class="hint">You may need to create new data structures or functions to complete this part of the assignment. In general, there are no restrictions as to what you can change in this week's template code as long as the main objectives are met.</div>
 
-<p>Observe that your MST function will need to clean up any existing MST before recalculating. This is especially important because the unrestricted MST is not necessarily a superset of the restricted MST!</p>
+<p>Your MST function does not need to clean up any existing MST before recalculating. This is done for you in GraphApp.cpp. Feel free to look at it.</p>
 
-<p>The visualizer will show off your MST, restricted to existing edges, when you start it. You can rebuild the visualizer just by running <span class="code">make</span> from the command line while in the assignment's codebase directory. You can then run the visualizer by running <span class="code">bin/graphview</span> from the same directory. While running the visualizer, you can also press IJKL to alter the azimuth/altitude of your camera, and press U and O to zoom in and out. MST edges are highlighted in blue where they coincide with existing edges, and in purple where they do not.</p>
+<p>The visualizer will show off your MST when you type m or k depending on which algorithm you implementedYou can rebuild the visualizer just by running <span class="code">make</span> from the command line while in the assignment's codebase directory. You can then run the visualizer by running <span class="code">GraphApp</span> from the same directory.</p>
 
-<p>To change the star your view is pivoting around, middle-click on the star you wish to change to.</p>
-
-<p>To make the calculations take less time overall, we've chosen a contiguous portion of around 360 stars for you to run your algorithms on. If you'd like to try your algorithms on all of New Eden, change the appropriate <span class="code">#define</span> in <span class="code">src/starmap.hpp</span> and do a full rebuild (<span class="code">make clean</span> followed by <span class="code">make</span>).</p>
-
-<p>To recompute a restricted MST, press the T key while the visualizer is running. To compute the full MST, which will include disconnected portions of the universe, press Shift-T; this takes a long time to compute, especially on the full dataset.</p>
-
-<p>If your visualizer is not working, then instead compute the total edge cost of the minimum spanning trees (both restricted and full) over the small dataset, and place it in <span class="code">README.md</span>.</p>
+<p>To recompute the MST, press the r or c key while the visualizer is running. This will clean up the old graph and build a completely new one. Then you can hit k or m against to compute the MST.</p>
 
 <h3>Part 2: Single-Source Shortest-Path</h3>
 
-<p>You're a manufacturer of navigational computers for starship pilots in New Eden. Pilots need to know shortest paths from point A to point B all the time; pilots value efficiency and are largely uninterested in scenic routes. However, different pilots have different navigational needs.</p>
-
-<p>Every solar system has a security status assigned to it, from -1.0 to 1.0, which dictates the level of protection provided by the local authorities. Any security status above or equal to 0.5 is considered "high security", which means that the local police will respond swiftly and decisively to any criminal acts (like firing on another vessel), and the local faction naval forces will chase known outlaws and engage them on sight. Any security status below 0.5 is considered "low security", which means that the authorities will not respond to criminal acts or outlaws, although criminal acts are recorded. A security level below 0.0 is considered "zero security", which means that the authorities have no presence at all; we'll treat it as equivalent to "low security" for our purposes.</p>
-
-<p>To a scout for a military operation, security status is immaterial: a properly trained scout can evade pirates and enemy forces in low-security and zero-security space. A scout is interested only in the shortest path from A to B, without any special weighting.</p>
-
-<p>To a civilian freighter pilot, unescorted travel through low-security space spells doom. Low-security chokepoints between major trading hubs are pirate havens, and experienced freighter pilots will route around them at all costs. High-capacity freighters are slow, expensive vessels and are difficult to replace if lost.</p>
-
-<p>To a hardened outlaw, flying through high-security space is a risky venture. Outlaws are pursued relentlessly by the local faction navy in high-security space, and the police allow other pilots to shoot confirmed outlaws on sight. Outlaws do not fear the risks of low-security space and will gladly route through it.</p>
-
-<p>Your navigational software must be able to cater to these three very different markets, and you're in charge of writing the shortest-path algorithm for your company's latest model. Before you can write this algorithm, you'll need to reason through it. We'll help you out.</p>
 
 <h4>Short Answer</h4>
 
@@ -375,27 +359,23 @@ int main(void)
 
 <p><div class="points easy">1</div>Before you start, outline Dijkstra's algorithm in your choice of stepwise English, Python, or other pseudocode. You should be able to refer to this outline and translate it more-or-less directly into working code.</p>
 
-<p><div class="points easy">4</div>Now open up <span class="code">src/starmap.cpp</span> in the assignment's source tree, and scroll down to <span class="code">std::list&lt;Star*&gt; Starmap::shortestPath(Star * src, Star * dest, CostSpec costs)</span>. This is the function you will need to implement.</p>
+<p><div class="points easy">4</div>Now open up <span class="code">GraphAlgorithms.cpp</span> in the assignment's source tree, and scroll down to <span class="code">void findShortestPath(int start, int end, Graph g, GraphApp *app) </span>. This is the function you will need to implement.</p>
 
-<p>This function declaration might be scary-looking, but it's actually not too bad: the function takes a source and destination star and a <span class="code">CostSpec</span>, which is a structure detailing the costs of all the different types of travel between stars, and returns a shortest path.</p>
-
-<div class="hint">The <span class="code">CostSpec</span> structure codifies the default costs of normal edges and MST edges, whether or not MST edges are used, and the cost multipliers applied to edges entering low-security space and high-security space. That is, if you have an edge from A to B, check B's security status to determine which multiplier is applied.<br />
-<br />
-If MST edges are enabled in the <span class="code">CostSpec</span>, and both a regular and MST edge exist between A and B, use the MST cost as the base cost. If MST edges are disabled, and both a regular and MST edge exist between A and B, use the regular cost.</div>
-
-<p>The <span class="code">CostSpec</span> structure has a couple of data fields related to direct jumps. <span class="emph">Don't worry about those</span> (unless you really want to); none of the default cost specifications use these fields. <span class="deemph">If you're interested, then the cost to any star to which no edge exists is dependent on the linear distance between them, multiplied by the scaling factor given in the CostSpec. The cost given is in cost per lightyear, but again, you can treat one world unit as exactly equal to one lightyear.</span></p>
+<p>This function declaration might be scary-looking, but it's actually not too bad: the function takes a source and destination node and a graph structure detailing the nodes and all of the edges in the graph, and returns a shortest path.</p>
 
 <p><div class="points hard">3</div>You'll need a way to pick stars according to some metric that will constantly be changing. There's no easy way to do this, unfortunately; not even <span class="code">std::priority_queue</span> will help you, because it doesn't support <span class="code">decreaseKey</span>. We've found that just using an <span class="code">std::vector</span> is good enough; since you're not computing lots of shortest paths, the performance penalty is not large (the algorithm takes a few seconds worst-case). However, for extra points, you can use a binary heap, Fibonacci heap, or similar data structure to make your algorithm much faster. See the relevant notes on Moodle if you want hints on how that's done.</p>
 
 <div class="hint">Notice that you <span class="emph">will</span> need to add some functions and member variables in order to implement Dijkstra's algorithm successfully. Don't be afraid to switch things around!</div>
 
-<p><div class="points hard">3</div>Why stop at Dijkstra's algorithm, though? There are a number of shortest-path algorithms out there. If you implement another shortest-path algorithm alongside Dijkstra's algorithm and can somehow switch between them (e.g. with a preprocessor toggle), you can earn up to three extra points.</p>
+<p><div class="points hard">3</div>Why stop at Dijkstra's algorithm, though? There are a number of shortest-path algorithms out there. If you implement another shortest-path algorithm alongside Dijkstra's algorithm and can somehow switch between them (e.g. adding a new button to the gui), you can earn up to three extra points.</p>
 
-<p>In any case, you'll need to return a <span class="code">std::list</span> listing out the stars in your supposed shortest path. Take advantage of the fact that you can add to lists on either end. The visualizer will take the list you return and go through all the stars within, drawing out your path on the screen.</p>
+<p>In any case, you'll need to fill the path vector in the code and use the draw_edge function to visualize the path. The visualizer will take the edges you add and draw out your path on the screen.</p>
 
-<p>The visualizer will test out your code at startup and try to find a shortest path between Itamo and Jakanerva (chosen more-or-less arbitrarily). You can compute your own shortest paths. Left-click on any star to set the source (blue octahedron), and right-click on any star to set the destination (orange octahedron). Then press ENTER to compute a path.</p>
+<p>The visualizer will test out your code at startup and try to find a shortest path between two points. You can compute your own shortest paths. Left-click on any node to set the source (red node), and right-click on any star to set the destination (green octahedron). Then press p to compute a path. And the path will appear in pink on the graph.</p>
 
 <h4>Test Cases</h4>
+
+<p> While the randomized graphs may be hard to visually inspect, you can toggle through a couple deterministic graphs using the c key in the visualizer. There it will be easier to manually check your algorithms and compare outputs with your peers. </p>
 
 <p>Note that your paths may be different from ours depending on the order in which you consider edges. </p>
 
@@ -405,9 +385,7 @@ If MST edges are enabled in the <span class="code">CostSpec</span>, and both a r
 
 </div>
 
-<div>If you're interested in seeing what a previous iteration of this assignment was like, take a look <a href="">here</a></div>
-
-
+<div>If you're interested in seeing what a previous iteration of this assignment was like (implementing graph algorithms on the EVE star database), take a look <a href="">here</a></div>
 
 </body>
 
