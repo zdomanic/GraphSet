@@ -85,6 +85,7 @@ public:
     void add_to_path(Edge * e);
     void delete_mst();
     void delete_path();
+    int testsuite();
 
 private:
     /**
@@ -108,6 +109,7 @@ private:
     
     int start;
     int end;
+    int graph;
 
     void draw_nodes();
     void draw_mst();
@@ -115,5 +117,8 @@ private:
     void generate_edges();
     void draw_edges(vector <Edge *> &v, int r, int g, int b);
     int find_point(int x, int y);
+    
+    void clean();
+    void makeGraphs(int number);
 
 };

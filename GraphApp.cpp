@@ -46,6 +46,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <iostream>
 #include "GraphApp.hpp"
 
 void buildMSTPrim(Graph g, GraphApp *app);
@@ -108,20 +109,15 @@ GraphApp::GraphApp()
     
     start = 0;
     end = NPOINTS - 1;
+    graph = 0;
 }
-
 
 /**
  * @brief Deinitializes the main application class.
  */
 GraphApp::~GraphApp()
 {
-    for (Node * t : nodes) {
-        delete t;
-    }
-    for (Edge * e : edges) {
-        delete e;
-    }
+    clean();
        
 }
 
@@ -215,17 +211,15 @@ void GraphApp::OnEvent(SDL_Event* event)
         }
         else if (event->key.keysym.unicode == 'r')
         {
-            for (Node * t : nodes) {
-                delete t;
-            }
-            for (Edge * e : edges) {
-                delete e;
-            }
-            nodes.clear();
-            edges.clear();
+            clean();
             /* Generate a list of points. */
             generate_nodes();
             generate_edges();
+            OnRender(0);
+        }
+        else if (event->key.keysym.unicode == 'c')
+        {
+            makeGraphs(graph++ % 3);
             OnRender(0);
         }
     }
@@ -261,11 +255,11 @@ int GraphApp::find_point(int x, int y)
  */
 void GraphApp::draw_nodes()
 {
-    for (int i = 0; i < NPOINTS; i++) {
-		if (i == start)
+    for (uint i = 0; i < nodes.size(); i++) {
+		if (i == (uint)start)
 			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
 				0, 255, 0, 255);
-		else if (i == end)
+		else if (i == (uint)end)
 			filledCircleRGBA(surf, nodes[i]->x, nodes[i]->y, POINTSIZE,
 				255, 0, 0, 255);
 		else
@@ -367,4 +361,125 @@ int main(int argc, char* argv[])
 {
     GraphApp app;
     return app.OnExecute();
+}
+
+void GraphApp::clean() {
+    for (Node * t : nodes) {
+        delete t;
+    }
+    for (Edge * e : edges) {
+        delete e;
+    }
+    nodes.clear();
+    edges.clear();
+}
+
+void GraphApp::makeGraphs(int number) {
+    clean();
+
+    // 5x5 grid
+    if (number == 0) {
+        int c = 0;
+        for (int i = 200; i <= 600; i += 100) {
+            for (int j = 100; j <= 500; j += 100) {
+                nodes.push_back(new Node(c, i, j));
+                c++;
+            }
+        }
+        for(uint i = 0; i < nodes.size() - 1; ++i) {
+            if(i < nodes.size() - 5){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[i + 5]);
+                double w = a->distance(*b);
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+            if((i + 1) % 5 != 0){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[i + 1]);
+                double w = a->distance(*b);
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+        }
+        start = 0;
+        end = nodes.size() - 1; 
+    }
+    else if (number == 1) {
+        int c = 0;
+        for (int i = 200; i <= 600; i += 200) {
+            for (int j = 50; j <= 550; j += 250) {
+                nodes.push_back(new Node(c, i, j));
+                c++;
+            }
+        }
+        for(uint i = 0; i < nodes.size() - 1; ++i) {
+            if((i + 1) % 3 != 0){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[i + 1]);
+                double w = a->distance(*b);
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+            if((i + 1) % 3 == 2 && i < (nodes.size() - 3)){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[i + 3]);
+                double w = a->distance(*b);
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+           
+        }
+        start = 0;
+        end = nodes.size() - 1; 
+    }
+
+    else if (number == 2) {
+
+        nodes.push_back(new Node(0, 200, 100));
+        nodes.push_back(new Node(1, 200, 200));
+        nodes.push_back(new Node(2, 200, 300));
+        nodes.push_back(new Node(3, 200, 400));
+        nodes.push_back(new Node(4, 200, 500));
+        nodes.push_back(new Node(5, 400, 300));
+        nodes.push_back(new Node(6, 600, 100));
+        nodes.push_back(new Node(7, 600, 200));
+        nodes.push_back(new Node(8, 600, 300));
+        nodes.push_back(new Node(9, 600, 400));
+        nodes.push_back(new Node(10, 600, 500));
+
+        for(uint i = 0; i < nodes.size(); ++i) {
+            if(i / 4 == 0){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[i + 1]);
+                double w = a->distance(*b);
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+            if(i / 6 == 1  && i < nodes.size() - 1){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[i + 1]);
+                double w = a->distance(*b);
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+            if(i != 5){
+                Node *a = (nodes[i]);
+                Node *b = (nodes[5]);
+                double w = 1;
+                edges.push_back(new Edge(i, a, b, w));
+                a->edges.push_back(b);
+                b->edges.push_back(a);
+            }
+        }
+        start = 0;
+        end = nodes.size() - 1; 
+    }
+
 }
