@@ -1,8 +1,8 @@
 /**
  * @file GraphApp.cpp
- * @author Ellen Price <<eprice@caltech.edu>>
+ * @author The CS2 TA Team
  * @version 1.0
- * @date 2013-2015
+ * @date 2018
  * @copyright see License section
  *
  * @brief Functions for the main application class.

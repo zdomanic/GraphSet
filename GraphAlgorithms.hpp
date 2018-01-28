@@ -2,7 +2,7 @@
  * @file
  * @author The CS2 TA Team
  * @version 1.0
- * @date 2013-2015
+ * @date 2018
  * @copyright This code is in the public domain.
  *
  * @brief The MST and Shortest Path algorithms
