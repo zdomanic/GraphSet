@@ -5,7 +5,7 @@
  * @date 2013-2015
  * @copyright This code is in the public domain.
  *
- * @brief The gift wrapping and Graham scan convex hull algorithms
+ * @brief The MST and Shortest Path algorithms
  * (header file).
  *
  */
@@ -22,18 +22,27 @@
 
 using namespace std;
 
+/** STUDENT IMPLEMENTED FUNCTIONS */
 void buildMSTPrim(Graph g, GraphApp *app);
 
 void buildMSTKruskal(Graph g, GraphApp *app);
 
 void findShortestPath(int start, int end, Graph g, GraphApp * app);
 
+/** Helper function to draw an edge on the graphics app given two nodes */
 void drawEdge(Node *pt1, Node *pt2, vector<Edge *> edges, GraphApp *app, bool mst);
 
+/** Vector to store Nodes both on and not on MST for Prim's Algorithm */
 vector<Node *> onMST;
 vector<Node *> notOnMST;
 
-
+/**
+ * @brief Struct representing an edge between two trees during computation of
+ * 			MST using Kruskal's algorithm.
+ *
+ * The KruskalEdge struct stores the two Nodes that it connects as well as the
+ * weight of the edge (used in comparisons for priority_queue
+ */
 struct KruskalEdge
 {
 	double weight;

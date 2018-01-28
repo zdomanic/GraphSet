@@ -104,8 +104,8 @@ private:
     vector <Edge *> edges;
 
     vector <Edge *> mst;
-
     vector <Edge *> path;
+    
     int start;
     int end;
 
