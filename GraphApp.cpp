@@ -209,7 +209,7 @@ void GraphApp::OnEvent(SDL_Event *event) {
  * @brief Finds point closest to click.
  */
 int GraphApp::find_point(int x, int y) {
-    for (int i = 0; i < NPOINTS; i++) {
+    for (uint i = 0; i < nodes.size(); i++) {
         if (abs(nodes[i]->x - x) < SELECTION_ACCURACY &&
             abs(nodes[i]->y - y) < SELECTION_ACCURACY)
             return i;
