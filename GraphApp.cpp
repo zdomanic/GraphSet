@@ -187,6 +187,8 @@ void GraphApp::OnEvent(SDL_Event *event) {
             /* Generate a list of points. */
             generate_nodes();
             generate_edges();
+            start = 0;
+            end = NPOINTS - 1;
             OnRender(0);
         } else if (event->key.keysym.unicode == 'c') {
             makeGraphs(graph++ % 3);
