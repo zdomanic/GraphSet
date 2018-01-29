@@ -157,7 +157,7 @@
 
 <p>When finished, please enclose your submission as a ZIP file named <span class="code">cs2week5-[NAME].zip</span> or a tar.gz file named <span class="code">cs2week5-[NAME].tar.gz</span>, and upload it to the Week 5 assignment module on Moodle.</p>
 
-<p>Include answers to all short-answer questions in <span class="code">README.md</span>.</p>
+<p>Include answers to all short-answer questions in <span class="code">README.md</span> unless another file is specified.</p>
 
 <p><div class="points hard">0</div>Remember that while you are encouraged to at least attempt the "elevated difficulty" points (as exemplified by this example paragraph), they are targeted primarily toward experienced students looking for an additional challenge. You should <span class="emph">not</span> feel obligated to complete them if you find that you are having trouble with them.</p>
 
@@ -206,21 +206,7 @@
 
 <div class="attention">Make sure you have a good handle on the assignment background and the concepts referenced before proceeding.</div>
 
-<h2>Assignment (20 points)</h2>
-
-<p>You can do the three main parts of this assignment in any order. Place all your short-answer responses in <span class="code">README.md</span>.</p>
-
-<h3>Part -1: Before you proceed</h3>
-
-<h4>Tools: doxygen - Yay, documentation!</h4>
-
-<p>This assignment comes with a fairly extensive prewritten codebase. To help you navigate it, we ensure that our code documentation is compatible with the Doxygen automatic documentation generator.</p>
-
-<p><div class="points easy">0</div>Run <span class="code">doxygen</span> (or <span class="code">make docs</span>) in the assignment directory. (If you are on the cluster, run <span class="code">/cs/courses/cs2/doxygen/bin/doxygen</span> instead, and/or change the makefile's DOCGEN variable accordingly.)</p>
-
-<p>Then navigate to <span class="code">doc/html</span> in a file manager and open <span class="code">index.html</span>. Have a look around, and feel free to refer back to these pages if you want to know at a high level what's going on.</p>
-
-<p>Every so often, when you're writing your own methods, rebuild the docs. If you've been keeping Doxygen-compliant function headers, they'll show up as well.</p>
+<h2>Assignment (26 possible points)</h2>
 
 <h4>Building the Assignment</h4>
 
@@ -372,6 +358,9 @@ spots in the code base for each one. </p>
 <p>In any case, you'll need to use the draw_edge function to visualize the path. The visualizer will take the edges you add and draw out your path on the screen.</p>
 
 <p>The visualizer will test out your code at startup and try to find a shortest path between two points. You can compute your own shortest paths. Left-click on any node to set the source (green node), and right-click on any node to set the destination (red node). Then press p to compute a path. And the path will appear in pink on the graph.</p>
+
+<h3>Part 3: Minimum Spanning Trees (Again!)</h3>
+<p><div class="points hard">5</div>Earlier in the assignment you implemented either Prim or Kruskal's spanning tree algorithm. Now, if you have time and are interesting, you can implement the other algorithm for a 5 additional points (1 for the outline and 4 for implementing the algorithm). </p>
 
 <h4>Test Cases</h4>
 
