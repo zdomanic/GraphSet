@@ -41,7 +41,7 @@
  *				of the Node struct in structs.hpp
  * 				You can compare two nodes to see if they are the same by
  * 				comparing the id attribute of a Node.
- *				You can calculate distance from one star to another by calling
+ *				You can calculate distance from one node to another by calling
  * 				the double distance(Node a) function of the Node struct.
  * 				Whenever you decide to add an edge between two nodes
  *				to the MST, you can use the provided drawEdge function
